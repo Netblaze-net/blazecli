@@ -1,0 +1,8 @@
+variable "region" {
+  type = string
+}
+
+variable "backend_bucket" {
+  type        = string
+  description = "The bucket that all sequential steps will use to store their tfstate"
+}

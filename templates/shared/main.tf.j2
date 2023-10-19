@@ -1,0 +1,33 @@
+terraform {
+  required_providers {
+    github = {
+      source  = "integrations/github"
+      version = "~> 5.0"
+    }
+    google = {
+      version = "5.0.0"
+    }
+  }
+  backend "gcs" {
+    prefix = "terraform/state/shared"
+  }
+}
+
+provider "github" {
+  token = var.ghp_token
+}
+
+provider "google" {
+  project = var.project_id
+  region  = var.region
+}
+
+module "enable_essential_apis" {
+  source = "github.com/Netblaze-net/terraform-modules/basic_google_apis"
+}
+
+resource "google_dns_managed_zone" "default" {
+  name     = "${var.org_name}-zone"
+  dns_name = "${var.base_domain}."
+  depends_on = [module.enable_essential_apis]
+}

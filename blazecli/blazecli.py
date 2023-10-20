@@ -20,36 +20,15 @@ def init():
     region = input("Enter region:\n")
     backend_bucket = input("Enter name of backend bucket:\n")
     base_domain = input("Enter name of the base domain:\n")
-    #
-    #
-    # base_dir = org
-    # subdirs = ['.github', 'init', 'shared']
-    #
     variables = {
         "region": region,
         "backend_bucket": backend_bucket,
         "org": org,
         "base_domain": base_domain,
     }
-    #
-    # os.mkdir(base_dir)
-    # for dr in subdirs:
-    #     if dr == ".github":
-    #         os.mkdir(os.path.join(base_dir, dr))
-    #         os.mkdir(os.path.join(base_dir, dr, 'workflows'))
-    #     else:
-    #         os.mkdir(os.path.join(base_dir, dr))
-
-    root_directory = './templates'
-
-    current_directory = os.getcwd()
-
-    # List the contents of the current directory
-    contents = os.listdir(current_directory)
 
             # Copy the source directory and its contents to the target folder
     shutil.copytree(resource_path('templates'), os.path.join('.', os.path.basename(org)))
-    # print(f"Directory '{source_dir}' copied to '{target_folder}'.")
 
 
     for root, dirs, files in os.walk(f'./{org}'):

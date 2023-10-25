@@ -1,8 +1,9 @@
+name: Build appication
+
 on:
   release:
     types: [created]
   push:
-
 
 jobs:
   release:

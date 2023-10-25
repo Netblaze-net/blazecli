@@ -18,7 +18,7 @@ BlazeCLI is a command-line interface tool that allows you to generate new projec
 To install BlazeCLI, you'll need to have Rust and Cargo installed. You can then clone the repository and build the project:
 
 ```bash
-git clone https://github.com/YourGithubUsername/blazecli.git
+git clone https://github.com/Netblaze-net/blazecli.git
 cd blazecli
 cargo build --release
 ```

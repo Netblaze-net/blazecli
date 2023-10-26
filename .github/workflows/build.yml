@@ -200,4 +200,3 @@ jobs:
             blazecli-${{ steps.get_version.outputs.VERSION }}-${{ env.LINUX_AMD64_TARGET }}.tar.gz
             blazecli-${{ steps.get_version.outputs.VERSION }}-${{ env.LINUX_AMD64_TARGET }}.tar.gz
             blazecli-init.exe
-            LICENSE

@@ -49,7 +49,7 @@ jobs:
         shell: bash
         run: |
           echo "using version tag ${GITHUB_REF:10}"
-          echo ::set-output name=version::"${GITHUB_REF:10}"
+          echo "version=${GITHUB_REF:10}" >> $GITHUB_ENV
       - name: Install C compilation tooling (Linux)
         if: matrix.os == 'ubuntu-latest'
         run: |
@@ -111,15 +111,7 @@ jobs:
         shell: bash
         run: |
           echo "using version tag ${GITHUB_REF:10}"
-          echo ::set-output name=version::"${GITHUB_REF:10}"
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: ${{ steps.get_version.outputs.VERSION }}
-      #     release_name: ${{ steps.get_version.outputs.VERSION }}
+          echo "version=${GITHUB_REF:10}" >> $GITHUB_ENV
 
       - name: Download Linux amd64 tarball
         uses: actions/download-artifact@v2
@@ -140,56 +132,6 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: ${{ env.MACOS_TARGET }}
-
-      # - name: Release Linux amd64 tarball
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./blazecli-${{ steps.get_version.outputs.VERSION }}-${{ env.LINUX_AMD64_TARGET }}.tar.gz
-      #     asset_content_type: application/gzip
-      #     asset_name: blazecli-${{ steps.get_version.outputs.VERSION }}-${{ env.LINUX_AMD64_TARGET }}.tar.gz
-
-      # - name: Release Linux arm64 tarball
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./blazecli-${{ steps.get_version.outputs.VERSION }}-${{ env.LINUX_ARM64_TARGET }}.tar.gz
-      #     asset_content_type: application/gzip
-      #     asset_name: blazecli-${{ steps.get_version.outputs.VERSION }}-${{ env.LINUX_ARM64_TARGET }}.tar.gz
-
-      # - name: Release Windows tarball
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./blazecli-${{ steps.get_version.outputs.VERSION }}-${{ env.WINDOWS_TARGET }}.tar.gz
-      #     asset_content_type: application/gzip
-      #     asset_name: blazecli-${{ steps.get_version.outputs.VERSION }}-${{ env.WINDOWS_TARGET }}.tar.gz
-
-      # - name: Release Windows init exe
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./blazecli-init.exe
-      #     asset_content_type: application/vnd.microsoft.portable-executable
-      #     asset_name: blazecli-init.exe
-
-      # - name: Release MacOS tarball
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./blazecli-${{ steps.get_version.outputs.VERSION }}-${{ env.MACOS_TARGET }}.tar.gz
-      #     asset_content_type: application/gzip
-      #     asset_name: blazecli-${{ steps.get_version.outputs.VERSION }}-${{ env.MACOS_TARGET }}.tar.gz
 
       - name: Release All
         uses: softprops/action-gh-release@v1

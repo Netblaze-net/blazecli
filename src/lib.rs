@@ -1,8 +1,6 @@
 // This crate is a library
 #![crate_type = "lib"]
 
-extern crate regex;
-
 use regex::Regex;
 
 use rust_embed::RustEmbed;
@@ -39,10 +37,10 @@ pub struct ProjectArgs {
 #[folder = "templates/"]
 pub struct Asset;
 
-pub fn render(args:GenerateArgs) {
+pub fn render(args:GenerateArgs) -> io::Result<()> {
     let mut folders: HashSet<String> = HashSet::new();
-    for tempalte in Asset::iter() {        
-        folders.insert(tempalte.split("/").nth(0).unwrap().to_string());
+    for template in Asset::iter() {        
+        folders.insert(template.split("/").nth(0).unwrap().to_string());
     }
 
     if let Some(template_name) = args.template {
@@ -69,7 +67,10 @@ pub fn render(args:GenerateArgs) {
             }
             
             for file in templates_to_render.as_slice(){
-                let captured_vars = capture_variables(file, &re);
+                let file = Asset::get(&file).unwrap();
+                let file_str = std::str::from_utf8(&file.data).unwrap(); 
+
+                let captured_vars = capture_variables(file_str, &re).unwrap();
                 let captured_vars_iter = captured_vars.iter();
 
                 for variable in  captured_vars_iter{
@@ -81,18 +82,22 @@ pub fn render(args:GenerateArgs) {
 
             render_templates(templates_to_render, p_name, reg, &data);
 
-            println!("{:?}", data)
+            println!("{:?}", data);
+
+            Ok(())
 
         } else {
-            println!("Template for '{}' does not exist", template_name)
+            println!("Template for '{}' does not exist", template_name);
+            Ok(())
         }
     } else {
     
         println!("Avilable templates:");
         for folder in folders {
             println!("{}", folder)
-        }
-        
+        };
+
+        Ok(())
     }
 }
 
@@ -140,14 +145,26 @@ fn populate_data(t_variables: HashSet<String>, buf: &mut HashMap<String, String>
     println!("\n");
 }
 
-fn capture_variables(file: &Cow<'_, str>, re: &Regex) -> Vec<String> {
-    let t_content = &Asset::get(&file).unwrap().data;
-    let s = std::str::from_utf8(&t_content).unwrap();
-                
-    let values: Vec<String> = re.captures_iter(s)
-    .filter_map(|cap| cap.get(1))
-    .map(|m| m.as_str().to_owned())
-    .collect();
+pub fn capture_variables(content: &str, re: &Regex) -> Result<Vec<String>, regex::Error> {
+    let values: Vec<String> = re.captures_iter(content)
+        .filter_map(|cap| cap.get(1))
+        .map(|m| m.as_str().to_owned())
+        .collect();
+    Ok(values)
+}
 
-    return values;
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use regex::Regex;
+
+    #[test]
+    fn test_capture_variables() {
+        let re = Regex::new(r"\{\{\s*(.*?)\s*\}\}").unwrap();
+        let content = "Hello, {{ name }}. Age: {{ age }}";
+        
+        let captured = capture_variables(&content, &re);
+        
+        assert_eq!(captured.unwrap(), vec!["name", "age"]);
+    }
 }

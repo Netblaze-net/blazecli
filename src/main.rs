@@ -10,7 +10,7 @@ fn main() {
 
     match cli.command {
         Some(Commands::Generate(args)) => {
-            render(args);
+            render(args).unwrap();
         }
         None => {
             println!("No command provided. Use `--help` for available commands and options.");

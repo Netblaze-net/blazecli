@@ -1,4 +1,4 @@
-name: Terraform Destroy
+name: Terraform Destroy Shared
 
 on:
   workflow_dispatch:
@@ -17,6 +17,5 @@ jobs:
           "cloudbuild_installation_id": "41856087",
         }
       backend_bucket: "{{ backend_bucket }}"
-      configuration: "services-infra"
+      configuration: "shared"
     secrets: inherit
-
